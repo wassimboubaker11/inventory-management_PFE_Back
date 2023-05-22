@@ -33,11 +33,9 @@ public class Admin {
     @Column(name = "Email")
     private String email;
 
-    @Column(name = "Phone")
+    @Column(name = "tel")
     private String tel;
 
-    @Column(name = "Adresse")
-    private String adresse;
 
     @Column(name = "WEB_SITE")
     private String site;
@@ -45,21 +43,25 @@ public class Admin {
     @Column(name = "LOGO")
     private String logo;
 
-    @Column(name = "Descrition")
-    private String description;
+    @Column (name="Location")
+    private String adresse;
 
 
-    @Column(name = "Enabled")
-    private Boolean enabled=true;
+   // @Column(name = "Enabled")
+   // private Boolean enabled=true;
 
     @Column(name = "EMAIL_VERIFICATION_KEY")
     private String emailVerificationKey =UUID.randomUUID().toString().replace("-", "");
 
-    @Column(name = "EMAIL_VERIFIED")
-    private boolean emailVerified =false;
+    @Column(name = "VALIDE")
+    private boolean valide =false;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy="admin",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Gestionaire> GestonnaireList = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "admin")
+    private List<Depot> depots;
 }

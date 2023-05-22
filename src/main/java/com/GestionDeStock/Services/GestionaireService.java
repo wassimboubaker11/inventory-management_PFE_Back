@@ -1,12 +1,22 @@
 package com.GestionDeStock.Services;
 
+import com.GestionDeStock.DTO.GestionaireDTO;
 import com.GestionDeStock.Entity.Admin;
 import com.GestionDeStock.Entity.Gestionaire;
+import com.GestionDeStock.Entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.List;
 
 public interface GestionaireService {
 
-    Gestionaire registerGestionaire(String DTO, MultipartFile photo) throws IOException;
+    GestionaireDTO registerGestionaire(String DTO, int idadmin , MultipartFile photo ) throws IOException;
+
+    Gestionaire validegestionaire(int idg , Gestionaire gestionaire) throws MessagingException, jakarta.mail.MessagingException, IOException;
+
+    List<GestionaireDTO> getGestionairesByAdminId(Integer adminId);
+
+    GestionaireDTO getgestionairebyemail(String email);
 }

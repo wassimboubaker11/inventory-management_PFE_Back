@@ -1,10 +1,11 @@
 package com.GestionDeStock.auth;
 
-import com.GestionDeStock.Entity.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @Data
 @Builder
@@ -13,8 +14,6 @@ import lombok.NoArgsConstructor;
 public class AuthenticationResponse {
 
     private String token;
-
-
 
 
 }

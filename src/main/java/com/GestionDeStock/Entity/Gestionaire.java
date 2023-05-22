@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
@@ -18,7 +19,7 @@ import java.util.UUID;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
         })
-public class Gestionaire {
+public class Gestionaire  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,38 +28,46 @@ public class Gestionaire {
     @Column(name = "Name")
     private String name;
 
+    @Column(name = "Email")
+    private String email;
+
     @Column(name = "CIN")
     private String cin;
 
-    @Column(name = "Ville")
-    private String ville;
+    @Column(name = "Tel")
+    private int tel;
+
+    @Column(name = "Country")
+    private String country;
+
+
+    @Column(name = "City")
+    private String city;
 
     @Column(name = "CodePostal")
     private String codePostal;
+
+    @Column(name = "address")
+    private String address;
+
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "Birthday")
     private String dateOfBirthday;
 
 
-
     @Column(name = "Description")
     private String description;
 
-    @Column(name = "Email")
-    private String email;
 
     @Column(name = "photo")
     private String photo;
 
-    @Column(name = "Enabled")
-    private Boolean enabled=true;
-
     @Column(name = "EMAIL_VERIFICATION_KEY")
     private String emailVerificationKey= UUID.randomUUID().toString().replace("-", "");
 
-    @Column(name = "EMAIL_VERIFIED")
-    private boolean emailVerified;
+    @Column(name = "VALIDE")
+    private boolean valide =false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="admin_id")

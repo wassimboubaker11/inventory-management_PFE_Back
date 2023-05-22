@@ -1,6 +1,5 @@
 package com.GestionDeStock.auth;
 
-import com.GestionDeStock.DTO.AdminDTO;
 import com.GestionDeStock.Entity.Role;
 import com.GestionDeStock.Entity.Super_Admin;
 import com.GestionDeStock.Entity.User;
@@ -61,10 +60,17 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
 
-        var jwtToken = jwtService.generateToken(user);
+
+
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+
+        var claims = new HashMap<String , Object>();
+        claims.put("Role",user.getRole());
+        claims.put("username" , user.getName());
+        claims.put("id", user.getId());
+
+        var jwtToken = jwtService.generateToken(claims , user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();

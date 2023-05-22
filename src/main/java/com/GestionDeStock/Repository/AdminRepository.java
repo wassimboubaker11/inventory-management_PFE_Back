@@ -1,5 +1,6 @@
 package com.GestionDeStock.Repository;
 
+import com.GestionDeStock.DTO.AdminDTO;
 import com.GestionDeStock.Entity.Admin;
 
 
@@ -11,5 +12,5 @@ import java.util.List;
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
 
-
+    Admin getAdminByEmail(String email);
 }

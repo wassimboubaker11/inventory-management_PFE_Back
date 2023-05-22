@@ -17,7 +17,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name ="user")
+@Entity
+@Table(	name = "user",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email")
+        })
 public class User implements UserDetails {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +51,7 @@ public class User implements UserDetails {
     public String getUsername() {
         return email ;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {

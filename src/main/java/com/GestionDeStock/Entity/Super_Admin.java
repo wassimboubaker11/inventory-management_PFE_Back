@@ -16,7 +16,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name ="Super_Admin")
+@Entity
+@Table(	name = "Super_Admin",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email")
+        })
 public class Super_Admin implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
