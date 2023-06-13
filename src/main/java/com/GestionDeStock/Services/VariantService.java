@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface VariantService {
 
-     VariantDTO addVariant(List<Integer> sousOptionIds, int articleId);
+     VariantDTO addVariant(List<Integer> sousOptionIds, int articleId , int quantity,String nom);
 
      List<VariantDTO> getVariantbyarticle(int idarticle);
 }

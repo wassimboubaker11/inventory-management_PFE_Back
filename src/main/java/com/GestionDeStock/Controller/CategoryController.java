@@ -37,4 +37,18 @@ public class CategoryController {
     public void deletecategorybyid(@PathVariable("idcategory") int idcategory){
         categoryService.deletecategory(idcategory);
     }
+
+    // http://localhost:8081/api/v1/getCatgorybyID/{idcategory}
+    @GetMapping("/getCatgorybyID/{idcategory}")
+    public ResponseEntity<CategoryDTO> getCatgorybyID(@PathVariable("idcategory") int idcategory){
+        return ResponseEntity.ok(categoryService.getcategorybyid(idcategory));
+    }
+
+    // http://localhost:8081/api/v1/updateCategory/{idcategory}
+    @PutMapping ("/updateCategory/{idcategory}")
+    public ResponseEntity<CategoryDTO> updateCategory(@RequestBody Category category ,@PathVariable("idcategory") int idcategory){
+        return ResponseEntity.ok(categoryService.updateCategory(category , idcategory));
+    }
+
+
 }

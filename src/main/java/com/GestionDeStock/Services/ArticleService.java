@@ -25,4 +25,8 @@ public interface ArticleService {
     ArticleDTO getarticlebyid(int idarticle);
 
     List<ArticleDTO> getallarticlebyiddepot(int iddepot);
+
+
+    List<ArticleDTO> getAllArticlewithOutAlert();
+
 }

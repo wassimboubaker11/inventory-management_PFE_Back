@@ -32,18 +32,31 @@ public class VariantServiceImpl implements VariantService{
     private ModelMapper modelMapper = new ModelMapper();
 
     @Override
-    public VariantDTO addVariant(List<Integer> sousOptionIds, int articleId) {
+    public VariantDTO addVariant(List<Integer> sousOptionIds, int articleId , int quantity , String nom) {
 
         Article article = articleRepository.findById(articleId).get();
 
-       // List<SousOption> sousOptionsList = sous_optionRepository.findAllById(sousOptionIds);
 
         List<SousOption> sousOptions = sous_optionRepository.findAllById(sousOptionIds);
+
+
+        int totalVariantQuantity = variantRepository.sumQuantityByArticleId(articleId); // calculer all quantity variants
+
+        int remainingQuantity = article.getQuantite() - totalVariantQuantity; // quantity disponible variant
+
+        if (quantity > remainingQuantity) {
+            throw new IllegalArgumentException("Requested quantity exceeds available quantity.");
+        }
+
 
         Variant variant = new Variant();
         variant.setSousOptions(sousOptions);
         variant.setArticle(article);
+        variant.setQuantity(quantity);
+        variant.setNom(nom);
+
         Variant variant1 =variantRepository.save(variant);
+
         for(SousOption sousOption : sousOptions){
             sousOption.getVariants().add(variant);
             sous_optionRepository.save(sousOption);

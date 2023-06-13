@@ -61,8 +61,8 @@ public class Article implements Serializable {
     @Column(name = "PICTURE")
     private String picture;
 
-    @Column(name = "status")
-    private boolean status;
+    @Enumerated(EnumType.STRING)
+    private Type2 status;
 
     @JsonIgnore
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY )
@@ -83,4 +83,7 @@ public class Article implements Serializable {
 
     @OneToMany(mappedBy = "article")
     private List<MVT> mvtList;
+
+    @OneToOne
+    private Alert alert;
 }

@@ -2,13 +2,15 @@ package com.GestionDeStock.Entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 
 import java.io.Serializable;
+
+import java.time.LocalDateTime;
+
 import java.util.List;
+
 
 @Entity
 @Getter
@@ -23,7 +25,8 @@ public class Commande implements Serializable {
     @Column(name = "idcommande")
     private int idcommande;
 
-
+    @Column(name = "nom")
+    private String nom;
 
     @Column(name = "quantite")
     private int quantite;
@@ -31,10 +34,17 @@ public class Commande implements Serializable {
     @Column(name = "montant")
     private Float montant;
 
+
+    @Column(name = "Date")
+    private LocalDateTime date;
+
     @ManyToOne
     private Tier tier;
 
     @OneToMany(mappedBy = "commande")
     private List<MVT> mvtList;
+
+    @OneToOne
+    private Facture facture;
 }
 

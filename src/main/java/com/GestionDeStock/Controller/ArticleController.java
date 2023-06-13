@@ -75,5 +75,11 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.getallarticlebyiddepot(iddepot));
     }
 
+    //  http://localhost:8081/api/v1/getAllArticlewithOutAlert
+    @GetMapping("getAllArticlewithOutAlert")
+    public ResponseEntity<List<ArticleDTO>> getAllArticlewithOutAlert(){
+        return ResponseEntity.ok(articleService.getAllArticlewithOutAlert());
+    }
+
 
 }

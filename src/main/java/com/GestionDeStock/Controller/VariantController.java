@@ -25,7 +25,9 @@ public class VariantController {
     @PostMapping("/addvariant/{idarticle}")
     public ResponseEntity<VariantDTO> addvariant(@RequestBody Map<String, Object> request, @PathVariable("idarticle") int articleId ){
         List<Integer> sousOptionIds = (List<Integer>) request.get("sousOptions");
-        return ResponseEntity.ok(variantService.addVariant(sousOptionIds , articleId));
+        int quantity = (int) request.get("quantity");
+        String nom = (String) request.get("nom");
+        return ResponseEntity.ok(variantService.addVariant(sousOptionIds , articleId , quantity , nom));
     }
 
     //  http://localhost:8081/api/v1/getVariantbyarticle/idarticle

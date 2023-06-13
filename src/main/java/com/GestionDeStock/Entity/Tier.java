@@ -1,7 +1,6 @@
 package com.GestionDeStock.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +26,7 @@ public class Tier implements Serializable {
     @Column(name = "idtier")
     private int idtier;
 
-    @Column(name = "COMPANY_NAME")
+    @Column(name = "nom")
     private String nom;
 
     @Column(name = "Email")

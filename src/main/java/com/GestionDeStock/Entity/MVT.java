@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -21,6 +23,15 @@ public class MVT implements Serializable {
     @Id
     @Column(name = "idmvt")
     private int idmvt;
+
+    @Column(name = "quantity")
+    private int quantity;
+
+
+    @Enumerated(EnumType.STRING)
+    private Type1 type1;
+
+
 
     @ManyToOne
     private Commande commande;

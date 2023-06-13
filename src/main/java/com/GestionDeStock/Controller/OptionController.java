@@ -38,4 +38,17 @@ public class OptionController {
     public void  deleteoption(@PathVariable ("idoption") int idoption){
         optionService.deleteoption(idoption);
     }
+
+    // http://localhost:8081/api/v1/getoptiobById
+    @GetMapping("/getoptiobById/{idoption}")
+    public ResponseEntity<OptionDTO> getOptionById(@PathVariable("idoption") int idoption){
+        return ResponseEntity.ok( optionService.getOptionByID(idoption));
+    }
+
+
+    // http://localhost:8081/api/v1/updateOption/{idoption}
+    @PutMapping("/updateOption/{idoption}")
+    public ResponseEntity<OptionDTO> updateOption(@RequestBody Option option,@PathVariable ("idoption") int idoption){
+        return  ResponseEntity.ok(optionService.updateOption(option , idoption));
+    }
 }

@@ -13,4 +13,8 @@ public interface ArticleRepository extends JpaRepository<Article , Integer> {
 
     @Query("SELECT a FROM Article a JOIN a.depot d WHERE d.iddepot = :depotId")
     List<Article> findByDepotId(@Param("depotId") int depotId);
+
+
+    @Query("SELECT a FROM Article a WHERE a.alert IS NULL")
+    List<Article> findAllArticlesWithoutAlert();
 }

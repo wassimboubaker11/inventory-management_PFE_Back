@@ -1,7 +1,9 @@
 package com.GestionDeStock.DTO;
 
+import com.GestionDeStock.Entity.Alert;
 import com.GestionDeStock.Entity.Category;
 import com.GestionDeStock.Entity.Depot;
+import com.GestionDeStock.Entity.Type2;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,11 +39,13 @@ public class ArticleDTO {
 
     private String picture;
 
-    private boolean status;
+    private Type2 status;
 
     private String description;
 
     private CategoryDTO category;
 
     private Set<DepotDTO> depot;
+
+
 }

@@ -13,4 +13,8 @@ public interface OptionService {
     List<OptionDTO> getAlloption();
 
     void deleteoption(int idoption);
+
+    OptionDTO getOptionByID(int idoption);
+
+    OptionDTO updateOption(Option option , int idoption);
 }

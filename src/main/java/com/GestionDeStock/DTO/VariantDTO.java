@@ -17,5 +17,9 @@ public class VariantDTO {
 
     private int idvariant;
 
+    private String nom;
+
+    private int quantity;
+
     private List<SousOptionDTO> sousOptions;
 }

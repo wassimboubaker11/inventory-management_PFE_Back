@@ -1,19 +1,21 @@
 package com.GestionDeStock.Services;
 
+import com.GestionDeStock.DTO.ArticleDTO;
 import com.GestionDeStock.DTO.CommandeDTO;
-import com.GestionDeStock.Entity.Article;
-import com.GestionDeStock.Entity.Commande;
-import com.GestionDeStock.Entity.MVT;
-import com.GestionDeStock.Entity.Tier;
+import com.GestionDeStock.DTO.FactureDTO;
+import com.GestionDeStock.DTO.MVTDTO;
+import com.GestionDeStock.Entity.*;
 import com.GestionDeStock.Repository.ArticleRepository;
 import com.GestionDeStock.Repository.CommandeRepository;
 import com.GestionDeStock.Repository.MVTRepository;
 import com.GestionDeStock.Repository.TierRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,77 +36,260 @@ public class CommandeServiceImpl implements CommandeService{
 
     private ModelMapper modelMapper = new ModelMapper();
 
+
+
     @Transactional
     @Override
-    public CommandeDTO saveCom(int idTier, List<Integer> articleID, Commande commande, int quantity, Float montant) {
-        Tier tier = tierRepository.findById(idTier).orElseThrow();
+    public void saveCommandeclient(List<OrderItem> orderItems, int clientId, String nom) {
+        Tier client = tierRepository.findById(clientId).orElseThrow();
 
-        List<Article> articles = articleRepository.findAllById(articleID);
 
-        commande.setMontant(montant);
-        commande.setQuantite(quantity);
-        commande.setTier(tier);
+        List<MVT> mvts = new ArrayList<>();
 
-        List<MVT> mvtList = new ArrayList<>();
+        // Calculate the total quantity and amount
+        int totalQuantity = 0;
+        float totalAmount = 0.0f;
 
-        for (Article article : articles) {
+        for (OrderItem orderItem : orderItems) {
+
+            int articleId = orderItem.getArticleId();
+            int quantity = orderItem.getQuantity();
+
+            Article article = articleRepository.findById(articleId).orElseThrow() ;
+
+            totalQuantity += quantity;
+            totalAmount += (quantity * article.getPrixvente());
+
+            int newQuantity = article.getQuantite() - quantity;
+            article.setQuantite(newQuantity);
+
             MVT mvt = new MVT();
             mvt.setArticle(article);
-            mvt.setCommande(commande);
-            mvtList.add(mvt);
+            mvt.setQuantity(quantity);
+            mvts.add(mvt);
 
-            // Update the quantity of the article
+            articleRepository.save(article);
+
+
+
+        }
+
+        Commande commande = new Commande();
+        commande.setQuantite(totalQuantity);
+        commande.setMontant(totalAmount);
+        commande.setNom(nom);
+        commande.setTier(client);
+        commande.setDate(LocalDateTime.now());
+        commandeRepository.save(commande);
+
+        for (MVT mvt : mvts) {
+            mvt.setCommande(commande);
+            mvt.setType1(Type1.SORTANT);
+            mvtRepository.save(mvt);
+        }
+    }
+
+
+    @Override
+    public void saveCommandefournisseur(List<OrderItem> orderItems, int clientId, String nom) {
+        Tier client = tierRepository.findById(clientId).orElseThrow();
+
+
+        List<MVT> mvts = new ArrayList<>();
+
+        // Calculate the total quantity and amount
+        int totalQuantity = 0;
+        float totalAmount = 0.0f;
+
+        for (OrderItem orderItem : orderItems) {
+
+            int articleId = orderItem.getArticleId();
+            int quantity = orderItem.getQuantity();
+
+            Article article = articleRepository.findById(articleId).orElse(null);
+
+            totalQuantity += quantity;
+            totalAmount += (quantity * article.getPrixachat());
+
             int newQuantity = article.getQuantite() + quantity;
             article.setQuantite(newQuantity);
+
+            MVT mvt = new MVT();
+            mvt.setArticle(article);
+            mvt.setQuantity(quantity);
+            mvts.add(mvt);
+
+            articleRepository.save(article);
+
+
+
+        }
+
+        Commande commande = new Commande();
+        commande.setQuantite(totalQuantity);
+        commande.setMontant(totalAmount);
+        commande.setNom(nom);
+        commande.setTier(client);
+        commande.setDate(LocalDateTime.now());
+        commandeRepository.save(commande);
+
+        for (MVT mvt : mvts) {
+            mvt.setCommande(commande);
+            mvt.setType1(Type1.ENTRANT);
+            mvtRepository.save(mvt);
+        }
+    }
+
+
+
+    @Override
+    public List<CommandeDTO> getAllCommandeClient() {
+        List<Tier> tiers = tierRepository.findAllByType(Type.CLIENT);
+
+        List<Integer> clientIds = new ArrayList<>();
+        List<Commande> commandes = new ArrayList<>();
+
+        for (Tier tier : tiers) {
+            clientIds.add(tier.getIdtier());
+        }
+        for (Integer integer : clientIds) {
+            List<Commande> tierCommandes = commandeRepository.findAllByTierId(integer);
+            commandes.addAll(tierCommandes);
+        }
+
+        List<CommandeDTO> commandeDTOS = new ArrayList<>();
+        for (Commande commande : commandes) {
+            CommandeDTO commandeDTO = modelMapper.map(commande, CommandeDTO.class);
+            if (commande.getFacture() != null) {
+                commandeDTO.setFactureDTO(modelMapper.map(commande.getFacture(), FactureDTO.class));
+            }
+            commandeDTOS.add(commandeDTO);
+        }
+        return commandeDTOS;
+    }
+
+    @Override
+    public List<CommandeDTO> getAllCommandeFournisseur() {
+        List<Tier> tiers = tierRepository.findAllByType(Type.FOURNISSEUR);
+
+        List<Integer> clientIds = new ArrayList<>();
+        List<Commande> commandes = new ArrayList<>();
+
+        for (Tier tier : tiers) {
+            clientIds.add(tier.getIdtier());
+        }
+        for (Integer integer : clientIds) {
+            List<Commande> tierCommandes = commandeRepository.findAllByTierId(integer);
+            commandes.addAll(tierCommandes);
+        }
+
+        List<CommandeDTO> commandeDTOS = new ArrayList<>();
+        for (Commande commande : commandes) {
+            CommandeDTO commandeDTO = modelMapper.map(commande, CommandeDTO.class);
+            if (commande.getFacture() != null) {
+                commandeDTO.setFactureDTO(modelMapper.map(commande.getFacture(), FactureDTO.class));
+            }
+            commandeDTOS.add(commandeDTO);
+        }
+        return commandeDTOS;
+    }
+
+    @Transactional
+    @Override
+    public void deletecommande(int idcommande) {
+        List<MVT> mvts = mvtRepository.findMVTByIdcommande(idcommande);
+        for (MVT mvt : mvts) {
+            Article article = mvt.getArticle();
+            article.setQuantite(article.getQuantite() + mvt.getQuantity());
             articleRepository.save(article);
         }
+        commandeRepository.deleteById(idcommande);
+    }
 
-        commande.setMvtList(mvtList);
+    @Override
+    public CommandeDTO getCommandeById(int idcommande) {
+        Commande commande = commandeRepository.findById(idcommande).orElse(null);
 
-        Commande savedCommande = commandeRepository.save(commande);
-        CommandeDTO commandeDTO = modelMapper.map(savedCommande, CommandeDTO.class);
+        if (commande == null) {
+            throw new EntityNotFoundException("Commande not found"); // Example exception handling
+        }
+
+        CommandeDTO commandeDTO = modelMapper.map(commande, CommandeDTO.class);
+
+        if (commande.getFacture() != null) {
+            commandeDTO.setFactureDTO(modelMapper.map(commande.getFacture(), FactureDTO.class));
+        }
+
+        List<MVTDTO> mvtList = new ArrayList<>();
+        for (MVT mvt : commande.getMvtList()) {
+            MVTDTO mvtDTO = modelMapper.map(mvt, MVTDTO.class);
+            mvtDTO.setArticleDTO(modelMapper.map(mvt.getArticle(), ArticleDTO.class));
+            mvtDTO.setCommandeDTO(modelMapper.map(mvt.getCommande(), CommandeDTO.class));
+            mvtList.add(mvtDTO);
+        }
+        commandeDTO.setMvtList(mvtList);
+
         return commandeDTO;
     }
 
-
-    @Transactional
     @Override
-    public CommandeDTO savecommande(int idTier,List<Integer> articleID, Commande commande) {
-        Tier tier = tierRepository.findById(idTier).orElseThrow();
+    public void deletecommandefournisseur(int idcommande) {
+        List<MVT> mvts = mvtRepository.findMVTByIdcommande(idcommande);
+        for (MVT mvt : mvts) {
+            Article article = mvt.getArticle();
+            article.setQuantite(article.getQuantite() - mvt.getQuantity());
+            articleRepository.save(article);
+        }
+        commandeRepository.deleteById(idcommande);
+    }
 
-        List<Article> articles = articleRepository.findAllById(articleID);
 
-        for(Article article:articles){
+    @Override
+    public void saveCommande( List<OrderItem> orderItems) {
+        List<MVT> mvts = new ArrayList<>();
+
+        // Calculate the total quantity and amount
+        int totalQuantity = 0;
+        float totalAmount = 0.0f;
+
+        for (OrderItem orderItem : orderItems) {
+
+            int articleId = orderItem.getArticleId();
+            int quantity = orderItem.getQuantity();
+
+            Article article = articleRepository.findById(articleId).orElse(null);
+
+            totalQuantity += quantity;
+            totalAmount += (quantity * article.getPrixvente());
+
+            int newQuantity = article.getQuantite() - quantity;
+            article.setQuantite(newQuantity);
+
             MVT mvt = new MVT();
             mvt.setArticle(article);
+            mvts.add(mvt);
+
+            articleRepository.save(article);
+
+
+
+        }
+
+        Commande commande = new Commande();
+        commande.setQuantite(totalQuantity);
+        commande.setMontant(totalAmount);
+
+        commande.setDate(LocalDateTime.now());
+        commandeRepository.save(commande);
+
+        for (MVT mvt : mvts) {
             mvt.setCommande(commande);
-           //commande.getMvtList().add(mvt);
+            mvt.setType1(Type1.ENTRANT);
             mvtRepository.save(mvt);
         }
 
-        Commande commande1 = commandeRepository.save(commande);
-        CommandeDTO commandeDTO = modelMapper.map(commande1 , CommandeDTO.class);
-        return commandeDTO;
     }
 
 
-    @Transactional
-    @Override
-    public CommandeDTO savecommandee(int idTier, int idarticle, Commande commande) {
-        Tier tier = tierRepository.findById(idTier).orElseThrow();
-
-        Article article = articleRepository.findById(idarticle).orElseThrow();
-
-            MVT mvt = new MVT();
-            mvt.setArticle(article);
-            mvt.setCommande(commande);
-            commande.setMontant(article.getPrixachat()*commande.getQuantite());
-            commande.setTier(tier);
-            mvtRepository.save(mvt);
-
-        Commande commande1 = commandeRepository.save(commande);
-        CommandeDTO commandeDTO = modelMapper.map(commande1 , CommandeDTO.class);
-        return commandeDTO;
-    }
 }
 

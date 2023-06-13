@@ -44,6 +44,24 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public CategoryDTO getcategorybyid(int idcategory) {
-        return null;
+        Category category = categoryRepository.findById(idcategory).get();
+        CategoryDTO categoryDTO = modelMapper.map(category , CategoryDTO.class);
+        return categoryDTO;
     }
+
+    @Override
+    public CategoryDTO updateCategory(Category category, int idcategory) {
+        Category category1 = categoryRepository.findById(idcategory).get();
+
+        category1.setNom(category1.getNom());
+
+        Category category2= categoryRepository.save(category1);
+
+        CategoryDTO categoryDTO = modelMapper.map(category2 , CategoryDTO.class);
+        return categoryDTO;
+    }
+
+
+
+
 }

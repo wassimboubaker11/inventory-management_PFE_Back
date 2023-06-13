@@ -26,6 +26,14 @@ public class Variant implements Serializable {
     @Column(name = "idvariant")
     private int idvariant;
 
+    @Column(name="Name")
+    private String nom;
+
+    @Column(name = "quantity")
+    private int quantity;
+
+
+
     @JsonIgnore
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY )
     @JoinTable(

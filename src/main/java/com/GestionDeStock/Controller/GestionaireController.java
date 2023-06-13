@@ -56,4 +56,11 @@ public class GestionaireController {
     public GestionaireDTO getgestionairebyemail(@PathVariable ("email") String email){
         return gestionaireService.getgestionairebyemail(email);
     }
+
+
+    //  http://localhost:8081/api/v1/user/deletegestionaire/{idgestionaire}
+    @DeleteMapping ("deletegestionaire/{idgestionaire}")
+    public void deletegestionaire(@PathVariable ("idgestionaire") int idgestionaire){
+         gestionaireService.deletegestionairebyid(idgestionaire);
+    }
 }

@@ -5,6 +5,7 @@ import com.GestionDeStock.DTO.ArticleDTO;
 import com.GestionDeStock.Entity.Article;
 import com.GestionDeStock.Entity.Category;
 import com.GestionDeStock.Entity.Depot;
+import com.GestionDeStock.Entity.Type2;
 import com.GestionDeStock.Repository.ArticleRepository;
 import com.GestionDeStock.Repository.CategoryRepository;
 import com.GestionDeStock.Repository.DepotRepository;
@@ -51,7 +52,16 @@ public class ArticleServiceImpl implements ArticleService {
         Article article1 = modelMapper.map(articleDTO , Article.class);
         article1.setCategory(category);
 
-         Article article2 = articleRepository.save(article1);
+        if (article1.getQuantite() > 8) {
+            article1.setStatus(Type2.IN_STOCK);
+        } else if (article1.getQuantite() == 0) {
+            article1.setStatus(Type2.OUT_OF_STOCK);
+        } else {
+            article1.setStatus(Type2.LOW_STOCK);
+        }
+
+
+        Article article2 = articleRepository.save(article1);
 
          ArticleDTO articleDTO1 = modelMapper.map(article2 , ArticleDTO.class);
 
@@ -59,12 +69,7 @@ public class ArticleServiceImpl implements ArticleService {
         depotRepository.save(depot);
 
 
-
         return articleDTO1;
-
-
-
-
 
     }
 
@@ -99,11 +104,21 @@ public class ArticleServiceImpl implements ArticleService {
         article1.setPrixvente(articleDTO.getPrixvente());
         article1.setQuantite(articleDTO.getQuantite());
         article1.setDescription(articleDTO.getDescription());
-        article1.setStatus(articleDTO.isStatus());
+
+        if (articleDTO.getQuantite() > 8) {
+            article1.setStatus(Type2.IN_STOCK);
+        } else if (articleDTO.getQuantite() == 0) {
+            article1.setStatus(Type2.OUT_OF_STOCK);
+        } else {
+            article1.setStatus(Type2.LOW_STOCK);
+        }
 
         article1.setPicture(fileLoaderService.loadFile(picture));
 
+
+
         Article article3 = articleRepository.save(article1);
+
 
         ArticleDTO articleDTO1 = modelMapper.map(article3 , ArticleDTO.class);
 
@@ -145,6 +160,17 @@ public class ArticleServiceImpl implements ArticleService {
         List<ArticleDTO> articleDTOS = new ArrayList<>();
         for(Article article : articles){
             articleDTOS.add(modelMapper.map(article , ArticleDTO.class));
+        }
+        return articleDTOS;
+    }
+
+    @Override
+    public List<ArticleDTO> getAllArticlewithOutAlert() {
+        List<Article> articles = articleRepository.findAllArticlesWithoutAlert();
+        List<ArticleDTO> articleDTOS = new ArrayList<>();
+        for(Article article : articles){
+            ArticleDTO articleDTO = modelMapper.map(article , ArticleDTO.class);
+            articleDTOS.add(articleDTO);
         }
         return articleDTOS;
     }
