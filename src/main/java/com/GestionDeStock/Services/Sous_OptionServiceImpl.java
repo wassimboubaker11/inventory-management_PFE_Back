@@ -52,5 +52,21 @@ public class Sous_OptionServiceImpl implements Sous_OptionService{
         return sousOptionDTOS;
     }
 
+    @Override
+    public List<SousOptionDTO> getSousOptionsbyidoption(int idoption) {
+        List<SousOption> sousOptions = sous_optionRepository.getSousOptionsByOption(idoption);
+        List<SousOptionDTO> sousOptionDTOS = new ArrayList<>();
+        for(SousOption sousOption : sousOptions){
+            SousOptionDTO sousOptionDTO = modelMapper.map(sousOption , SousOptionDTO.class);
+            sousOptionDTOS.add(sousOptionDTO);
+        }
+        return sousOptionDTOS;
+    }
+
+    @Override
+    public void deletesous_option(int idsous_option) {
+        sous_optionRepository.deleteById(idsous_option);
+    }
+
 
 }

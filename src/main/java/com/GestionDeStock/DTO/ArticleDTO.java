@@ -1,15 +1,13 @@
 package com.GestionDeStock.DTO;
 
-import com.GestionDeStock.Entity.Alert;
-import com.GestionDeStock.Entity.Category;
-import com.GestionDeStock.Entity.Depot;
-import com.GestionDeStock.Entity.Type2;
+import com.GestionDeStock.Entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 
@@ -47,5 +45,5 @@ public class ArticleDTO {
 
     private Set<DepotDTO> depot;
 
-
+    private List<VariantDTO> variants;
 }

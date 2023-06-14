@@ -24,6 +24,13 @@ public class CommandeController {
     private CommandeService commandeService;
 
 
+    // http://localhost:8081/api/v1/saveCommandeclientwithvariant/{clientId}/{nom}
+    @PostMapping("/saveCommandeclientwithvariant/{clientId}/{nom}")
+    public ResponseEntity<?> saveCommandeclientwithvariant(@RequestBody List<OrderItem> orderItems, @PathVariable("clientId") int clientId, @PathVariable("nom") String nom){
+        commandeService.saveCommandeclientwithvariant(orderItems,clientId , nom);
+        return new ResponseEntity<>("Commande saved successfully.", HttpStatus.OK);
+    }
+
 
     // http://localhost:8081/api/v1/saveCommandeclient/{clientId}/{nom}
     @PostMapping("/saveCommandeclient/{clientId}/{nom}")

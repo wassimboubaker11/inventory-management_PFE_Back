@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CommandeService {
 
-
+        public void saveCommandeclientwithvariant(List<OrderItem> orderItems, int clientId, String nom);
 
 
         public void saveCommandeclient(List<OrderItem> orderItems, int clientId, String nom);

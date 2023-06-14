@@ -5,10 +5,7 @@ import com.GestionDeStock.DTO.CommandeDTO;
 import com.GestionDeStock.DTO.FactureDTO;
 import com.GestionDeStock.DTO.MVTDTO;
 import com.GestionDeStock.Entity.*;
-import com.GestionDeStock.Repository.ArticleRepository;
-import com.GestionDeStock.Repository.CommandeRepository;
-import com.GestionDeStock.Repository.MVTRepository;
-import com.GestionDeStock.Repository.TierRepository;
+import com.GestionDeStock.Repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +20,8 @@ import java.util.List;
 public class CommandeServiceImpl implements CommandeService{
 
     @Autowired
+    private VariantRepository variantRepository;
+    @Autowired
     private MVTRepository mvtRepository;
 
     @Autowired
@@ -36,7 +35,64 @@ public class CommandeServiceImpl implements CommandeService{
 
     private ModelMapper modelMapper = new ModelMapper();
 
+    @Transactional
+    @Override
+    public void saveCommandeclientwithvariant(List<OrderItem> orderItems, int clientId, String nom) {
+        Tier client = tierRepository.findById(clientId).orElseThrow();
 
+
+        List<MVT> mvts = new ArrayList<>();
+
+        // Calculate the total quantity and amount
+        int totalQuantity = 0;
+        float totalAmount = 0.0f;
+        for (OrderItem orderItem : orderItems) {
+            int variantId = orderItem.getArticleId();
+            int quantity = orderItem.getQuantity();
+
+            Variant variant = variantRepository.findById(variantId).orElse(null);
+            Article article = articleRepository.findArticleByVariantId(variantId);
+
+            int quantityvariant = variant.getQuantity()-quantity;
+            variant.setQuantity(quantityvariant);
+
+            totalQuantity += quantity;
+            totalAmount += (quantity * article.getPrixvente());
+
+            int newQuantity = article.getQuantite() - quantity;
+            article.setQuantite(newQuantity);
+
+            MVT mvt = new MVT();
+            mvt.setArticle(article);
+            mvt.setQuantity(quantity);
+            mvt.setNomVariant(variant.getNom());
+            mvts.add(mvt);
+            Article article1 = articleRepository.save(article);
+            if (article1.getQuantite() > 8) {
+                article1.setStatus(Type2.IN_STOCK);
+            } else if (article1.getQuantite() == 0) {
+                article1.setStatus(Type2.OUT_OF_STOCK);
+            } else {
+                article1.setStatus(Type2.LOW_STOCK);
+            }
+            articleRepository.save(article1);
+            variantRepository.save(variant);
+        }
+
+        Commande commande = new Commande();
+        commande.setQuantite(totalQuantity);
+        commande.setMontant(totalAmount);
+        commande.setNom(nom);
+        commande.setTier(client);
+        commande.setDate(LocalDateTime.now());
+        commandeRepository.save(commande);
+
+        for (MVT mvt : mvts) {
+            mvt.setCommande(commande);
+            mvt.setType1(Type1.SORTANT);
+            mvtRepository.save(mvt);
+        }
+    }
 
     @Transactional
     @Override
@@ -119,12 +175,17 @@ public class CommandeServiceImpl implements CommandeService{
             mvt.setQuantity(quantity);
             mvts.add(mvt);
 
-            articleRepository.save(article);
-
-
+            Article article1 = articleRepository.save(article);
+            if (article1.getQuantite() > 8) {
+                article1.setStatus(Type2.IN_STOCK);
+            } else if (article1.getQuantite() == 0) {
+                article1.setStatus(Type2.OUT_OF_STOCK);
+            } else {
+                article1.setStatus(Type2.LOW_STOCK);
+            }
+            articleRepository.save(article1);
 
         }
-
         Commande commande = new Commande();
         commande.setQuantite(totalQuantity);
         commande.setMontant(totalAmount);

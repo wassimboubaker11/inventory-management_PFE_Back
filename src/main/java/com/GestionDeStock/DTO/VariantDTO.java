@@ -1,6 +1,7 @@
 package com.GestionDeStock.DTO;
 
 
+import com.GestionDeStock.Entity.Article;
 import com.GestionDeStock.Entity.SousOption;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,4 +23,9 @@ public class VariantDTO {
     private int quantity;
 
     private List<SousOptionDTO> sousOptions;
+
+    private String picture;
+
+    private float prixvente;
+
 }

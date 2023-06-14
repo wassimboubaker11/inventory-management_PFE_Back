@@ -17,4 +17,6 @@ public interface VariantRepository extends JpaRepository<Variant , Integer> {
     @Query("SELECT COALESCE(SUM(v.quantity), 0) FROM Variant v WHERE v.article.idarticle = :articleId")
     int sumQuantityByArticleId(@Param("articleId") int articleId);
 
+
+
 }

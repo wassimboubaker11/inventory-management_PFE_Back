@@ -27,6 +27,9 @@ public class MVT implements Serializable {
     @Column(name = "quantity")
     private int quantity;
 
+    @Column(name = "Nomvariant")
+    private String nomVariant;
+
 
     @Enumerated(EnumType.STRING)
     private Type1 type1;

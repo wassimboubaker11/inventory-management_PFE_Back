@@ -18,6 +18,8 @@ public class MVTDTO {
 
     private int idmvt;
 
+    private String nomVariant;
+
     private int quantity;
 
     private Type1 type1;

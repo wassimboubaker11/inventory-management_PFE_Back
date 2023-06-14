@@ -52,6 +52,8 @@ public class ArticleServiceImpl implements ArticleService {
         Article article1 = modelMapper.map(articleDTO , Article.class);
         article1.setCategory(category);
 
+
+
         if (article1.getQuantite() > 8) {
             article1.setStatus(Type2.IN_STOCK);
         } else if (article1.getQuantite() == 0) {

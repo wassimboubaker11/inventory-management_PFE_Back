@@ -11,4 +11,6 @@ public interface VariantService {
      VariantDTO addVariant(List<Integer> sousOptionIds, int articleId , int quantity,String nom);
 
      List<VariantDTO> getVariantbyarticle(int idarticle);
+
+     void deletevariant(int idvariant);
 }

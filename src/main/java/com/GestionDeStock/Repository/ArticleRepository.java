@@ -17,4 +17,11 @@ public interface ArticleRepository extends JpaRepository<Article , Integer> {
 
     @Query("SELECT a FROM Article a WHERE a.alert IS NULL")
     List<Article> findAllArticlesWithoutAlert();
+
+    @Query("SELECT a FROM Article a JOIN a.variants v WHERE v.idvariant = :variantId")
+    Article findArticleByVariantId(int variantId);
+
+
+    @Query("SELECT a FROM Article a WHERE a.code_barre = :codeBare")
+    Article findByCodeBare(@Param("codeBare") String codeBare);
 }

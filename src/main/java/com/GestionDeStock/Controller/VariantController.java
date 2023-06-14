@@ -36,4 +36,11 @@ public class VariantController {
     public ResponseEntity<List<VariantDTO>> getVariantbyarticle(@PathVariable("idarticle") int idarticle){
         return ResponseEntity.ok(variantService.getVariantbyarticle(idarticle));
         }
+
+    // http://localhost:8081/api/v1/deletevariant/{}
+
+    @DeleteMapping("/deletevariant/{idvariant}")
+    public void  deletevariant(@PathVariable ("idvariant") int idvariant){
+        variantService.deletevariant(idvariant);
+    }
 }

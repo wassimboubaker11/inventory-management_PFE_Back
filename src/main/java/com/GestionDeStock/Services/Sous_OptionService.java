@@ -12,5 +12,7 @@ public interface Sous_OptionService {
 
         List<SousOptionDTO> getAllSousOption();
 
+        List<SousOptionDTO> getSousOptionsbyidoption(int idoption);
 
+        void deletesous_option(int idsous_option);
 }

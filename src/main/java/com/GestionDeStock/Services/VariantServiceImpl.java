@@ -70,20 +70,48 @@ public class VariantServiceImpl implements VariantService{
 
 
 
+//    @Override
+//    public List<VariantDTO> getVariantbyarticle(int idarticle) {
+//
+//        Article article = articleRepository.findById(idarticle).get();
+//
+//        List<Variant> variants = variantRepository.findVariantByArticle(article);
+//        List<VariantDTO> variantDTO = new ArrayList<>();
+//        for (Variant variantss : variants ){
+//            variantDTO.add(modelMapper.map(variantss , VariantDTO.class));
+//        }
+//
+//
+//        return variantDTO;
+//
+//    }
+
     @Override
     public List<VariantDTO> getVariantbyarticle(int idarticle) {
 
-        Article article = articleRepository.findById(idarticle).get();
+        Article article = articleRepository.findById(idarticle).orElse(null);
 
         List<Variant> variants = variantRepository.findVariantByArticle(article);
-        List<VariantDTO> variantDTO = new ArrayList<>();
-        for (Variant variantss : variants ){
-            variantDTO.add(modelMapper.map(variantss , VariantDTO.class));
+        List<VariantDTO> variantDTOs = new ArrayList<>();
+
+        if (article != null) {
+            String picture = article.getPicture(); // Get the picture from the article
+            float prixvente = article.getPrixvente(); // Get the selling price from the article
+
+            for (Variant variant : variants) {
+                VariantDTO variantDTO = modelMapper.map(variant, VariantDTO.class);
+                variantDTO.setPicture(picture); // Set the picture for each variant
+                variantDTO.setPrixvente(prixvente); // Set the selling price for each variant
+                variantDTOs.add(variantDTO);
+            }
         }
 
+        return variantDTOs;
+    }
 
-        return variantDTO;
-
+    @Override
+    public void deletevariant(int idvariant) {
+        variantRepository.deleteById(idvariant);
     }
 
 
