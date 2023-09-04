@@ -56,16 +56,7 @@ public class AdminServiceImpl implements AdminService{
 
             adminRepo.save(admin);
 
-            //   String subject = "Account details for " + admin.getEmail();
-            //    String content = "Dear " + admin.getName() + ",<br><br>" +
-            //          "Thank you for registering with our system. Your account details are:<br><br>" +
-            //          "Email: " + admin.getEmail() + "<br>" +
-            //          "Password: " + admin.getEmailVerificationKey() + "<br><br>" +
-            //          "Please keep your password safe and secure.<br><br>" +
-            //         "Regards,<br>" +
-            //        "Your System";
 
-            //  mailService.sendEmail(admin.getEmail(), subject, content);
 
             return admin;
 

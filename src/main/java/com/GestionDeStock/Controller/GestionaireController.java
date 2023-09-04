@@ -37,8 +37,13 @@ public class GestionaireController {
         return ResponseEntity.ok(gestionaireService.registerGestionaire(DTO, idadmin,photo));
     }
 
-    //  http://localhost:8081/api/v1/user/getAllGestionairebyidadmin/{idadmin}
+    //  http://localhost:8081/api/v1/user/getGestionaireById/idgestionaire
+    @GetMapping("/getGestionaireById/{idgestionaire}")
+    public ResponseEntity<GestionaireDTO> getGestionaireById(@PathVariable ("idgestionaire") int idgestionaire){
+        return ResponseEntity.ok(gestionaireService.getGestionaireById(idgestionaire));
+    }
 
+    //  http://localhost:8081/api/v1/user/getAllGestionairebyidadmin/{idadmin}
 
     @GetMapping("/getAllGestionairebyidadmin/{idadmin}")
     public List<GestionaireDTO> getGestionairesByAdminId(@PathVariable ("idadmin") Integer adminId){

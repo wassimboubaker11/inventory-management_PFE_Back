@@ -125,4 +125,11 @@ public class GestionaireServiceImpl implements  GestionaireService{
     public void deletegestionairebyid(int idgestionaire) {
          gestionaireRepository.deleteById(idgestionaire);
     }
+
+    @Override
+    public GestionaireDTO getGestionaireById(int idGestionaire) {
+        Gestionaire gestionaire = gestionaireRepository.findById(idGestionaire).orElse(null);
+        GestionaireDTO gestionaireDTO = modelMapper.map(gestionaire , GestionaireDTO.class);
+        return gestionaireDTO;
+    }
 }

@@ -21,4 +21,6 @@ public interface GestionaireService {
     GestionaireDTO getgestionairebyemail(String email);
 
     void deletegestionairebyid(int idgestionaire);
+
+    GestionaireDTO  getGestionaireById(int idGestionaire);
 }
